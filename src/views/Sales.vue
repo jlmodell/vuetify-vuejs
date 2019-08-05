@@ -15,8 +15,9 @@
         <v-btn text color="deep-purple accent-4" @click="$emit">Change Dates</v-btn>
       </template>
     </v-banner>
-
-    <Sale :customers="customers" />
+    <template v-for="customer in customers">
+      <Sale :customer="customer" :key="customer.index" />
+    </template>
   </v-container>
 </template>
 

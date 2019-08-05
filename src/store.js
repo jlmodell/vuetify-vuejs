@@ -6,14 +6,22 @@ import * as types from "./mutation-types";
 
 const url = `https://busse-nestjs-api.herokuapp.com/`;
 
+const currentMonth = new Date().getMonth() - 1;
+const priorMonth = new Date().getMonth();
+const year = new Date().getFullYear();
+
 Vue.use(Vuex);
 Vue.use(VueCookies);
 
 const state = {
   msg: "",
   token: localStorage.getItem("auth_token") || null,
-  start: localStorage.getItem("start") || "",
-  end: localStorage.getItem("end") || "",
+  start:
+    localStorage.getItem("start") ||
+    new Date(year, currentMonth, 1).toISOString().substring(0, 10),
+  end:
+    localStorage.getItem("end") ||
+    new Date(year, priorMonth, 0).toISOString().substring(0, 10),
   customers: []
 };
 
@@ -96,17 +104,16 @@ const actions = {
     const AuthStr = "Bearer ".concat(this.state.token);
     console.log(AuthStr);
     try {
-      const res = await axios.get(url + "sales/distinct/cust", {
-        headers: { Authorization: AuthStr },
-        body: {
-          start: this.state.start,
-          end: this.state.end
+      const res = await axios.get(
+        url + `sales/distinct/cust/${this.state.start}/${this.state.end}`,
+        {
+          headers: { Authorization: AuthStr }
         }
-      });
+      );
 
       console.log(res);
 
-      commit(types.DISTINCT_CUSTOMERS, res.data.customers);
+      commit(types.DISTINCT_CUSTOMERS, res.data[0].customer);
     } catch (err) {
       console.log(err);
     }
