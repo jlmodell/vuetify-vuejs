@@ -62,6 +62,9 @@ export default {
   computed: {
     loggedIn() {
       return this.$store.getters.loggedIn;
+    },
+    localStorageDates() {
+      return [localStorage.getItem("start"), localStorage.getItem("end")];
     }
   },
   methods: {
@@ -84,7 +87,9 @@ export default {
       options: {
         autoApply: true,
         minDate: new Date("2012-01-02"),
-        maxDate: new Date(year, month - 1, 0)
+        maxDate: new Date(year, month - 1, 0),
+        startDate: this.$store.getters.start,
+        endDate: this.$store.getters.end
       }
     };
   },
