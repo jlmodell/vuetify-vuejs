@@ -20,7 +20,7 @@
     </v-app-bar>
 
     <v-navigation-drawer width="300px" absolute temporary v-model="drawer">
-      <v-list-item v-for="item in items" :key="item.title">
+      <v-list-item v-for="item in items" :key="item.title" :to="item.path">
         <v-list-item-icon>
           <v-icon>{{item.icon}}</v-icon>
         </v-list-item-icon>
@@ -35,7 +35,12 @@
           <v-icon>mdi-calendar</v-icon>
         </v-list-item-icon>
         <v-list-item-content justify-center>
-          <date-range-picker v-model="range" :options="options" format="YYYY-MM-DD" />
+          <date-range-picker
+            v-model="range"
+            v-if="loggedIn"
+            :options="options"
+            format="YYYY-MM-DD"
+          />
         </v-list-item-content>
       </v-list-item>
       <v-spacer></v-spacer>
@@ -77,8 +82,8 @@ export default {
     return {
       drawer: false,
       items: [
-        { title: "Home", icon: "mdi-home" },
-        { title: "Sales Analysis", icon: "mdi-home" }
+        { title: "Home", icon: "mdi-home", path: "/" },
+        { title: "Sales Analysis", icon: "mdi-home", path: "/sales" }
       ],
       range: [],
       options: {
