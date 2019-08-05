@@ -22,7 +22,8 @@ const state = {
   end:
     localStorage.getItem("end") ||
     new Date(year, currentMonth - 1, 0).toISOString().substring(0, 10),
-  customers: []
+  customers: [],
+  customer: []
 };
 
 const getters = {
@@ -43,6 +44,9 @@ const getters = {
   },
   customers(state) {
     return state.customers;
+  },
+  customer: state => cid => {
+    return state.customer.filter(c => c._id.cid == cid);
   }
 };
 
@@ -63,7 +67,11 @@ const mutations = {
     state.end = payload;
   },
   [types.DISTINCT_CUSTOMERS](state, payload) {
+    state.customer = [];
     state.customers = payload;
+  },
+  [types.CUSTOMER](state, payload) {
+    state.customer.push(payload);
   }
 };
 
@@ -113,11 +121,33 @@ const actions = {
           headers: { Authorization: authStr }
         }
       );
-
       if (res.status === 200) {
-        commit(types.DISTINCT_CUSTOMERS, res.data[0].customer);
+        await commit(types.DISTINCT_CUSTOMERS, res.data[0].customer);
+        // await res.data[0].customer.forEach(function(x) {
+        //   this.$store.dispatch("customer", x.name.split("|")[1]);
+        // });
       } else {
         console.log(res);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  async customer({ commit }, payload) {
+    try {
+      const res = await axios.get(
+        `${this.state.api.url}sales/summary/cust/${payload}/${
+          this.state.start
+        }/${this.state.end}`,
+        {
+          headers: {
+            Authorization: authStr
+          }
+        }
+      );
+
+      if (res.status === 200) {
+        commit(types.CUSTOMER, res.data[0]);
       }
     } catch (err) {
       console.log(err);

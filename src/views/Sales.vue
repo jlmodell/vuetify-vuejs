@@ -8,7 +8,7 @@
       :icon-color="iconColor"
       :elevation="elevation"
     >
-      Dates: {{new Date(start).toISOString()}} - {{new Date(end).toISOString()}}
+      {{new Date(start).toISOString().substring(0,10)}} - {{new Date(end).toISOString().substring(0,10)}}
       <template
         v-slot:actions
       >
@@ -27,8 +27,11 @@ import Sale from "@/components/Sale";
 export default {
   name: "sales",
   components: { Sale },
-  mounted() {
-    this.$store.dispatch("customers");
+  async mounted() {
+    await this.$store.dispatch("customers");
+    await this.$store.state.customers.forEach(x => {
+      this.$store.dispatch("customer", x.name.split("|")[1]);
+    });
   },
   method: {},
   computed: {

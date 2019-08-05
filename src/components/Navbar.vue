@@ -89,7 +89,7 @@ export default {
       options: {
         autoApply: true,
         minDate: new Date("2012-01-02"),
-        maxDate: new Date(year, month - 1, 0),
+        maxDate: new Date(year, month, 0),
         startDate: this.$store.getters.start,
         endDate: this.$store.getters.end
       }

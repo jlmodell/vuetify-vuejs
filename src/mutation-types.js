@@ -4,3 +4,4 @@ export const LOGOUT = "LOGOUT";
 export const UPDATE_START_DATE = "UPDATE_START_DATE";
 export const UPDATE_END_DATE = "UPDATE_END_DATE";
 export const DISTINCT_CUSTOMERS = "DISTINCT_CUSTOMERS";
+export const CUSTOMER = "CUSTOMER";
