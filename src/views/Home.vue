@@ -14,9 +14,7 @@
     <p class="headline">this is a headline</p>
     <p class="subheading">this is a subheading</p>
     <p class="caption">this is a caption</p>
-    <div>
-      <date-range-picker v-model="range" />
-  </div>
+    <div></div>
   </div>
 </template>
 

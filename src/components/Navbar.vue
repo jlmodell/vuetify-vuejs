@@ -32,7 +32,7 @@
       <v-spacer></v-spacer>
       <v-list-item>
         <v-list-item-icon>
-          <v-icon>mdi-date</v-icon>
+          <v-icon>mdi-calendar</v-icon>
         </v-list-item-icon>
         <v-list-item-content justify-center>
           <date-range-picker v-model="range" :options="options" format="YYYY-MM-DD" />
@@ -62,9 +62,6 @@ export default {
   computed: {
     loggedIn() {
       return this.$store.getters.loggedIn;
-    },
-    localStorageDates() {
-      return [localStorage.getItem("start"), localStorage.getItem("end")];
     }
   },
   methods: {

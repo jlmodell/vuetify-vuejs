@@ -1,34 +1,35 @@
 <template>
   <v-container>
-    <v-layout>
-      <v-flex>
-        <v-card class="mx-auto" color="indigo lighten-2" dark>
-          <div class="header headline mb-2">
-            <h1 class="text-center">Current Dates:</h1>
-          </div>
-          <div class="content">
-            <div class="start">
-              <h2 class="text-center">Start:</h2>
-              <v-card-text>
-                <p class="headline mb-4">{{new Date(start).toISOString()}}</p>
-              </v-card-text>
-            </div>
-            <div class="end">
-              <h2 class="text-center">End:</h2>
-              <v-card-text>
-                <p class="headline mb-4">{{new Date(end).toISOString()}}</p>
-              </v-card-text>
-            </div>
-          </div>
-        </v-card>
-      </v-flex>
-    </v-layout>
+    <v-banner
+      :sticky="sticky"
+      :single-line="singleLine"
+      :icon="icon"
+      :color="color"
+      :icon-color="iconColor"
+      :elevation="elevation"
+    >
+      Dates: {{new Date(start).toISOString()}} - {{new Date(end).toISOString()}}
+      <template
+        v-slot:actions
+      >
+        <v-btn text color="deep-purple accent-4" @click="$emit">Change Dates</v-btn>
+      </template>
+    </v-banner>
+
+    <Sale :customers="customers" />
   </v-container>
 </template>
 
 <script>
+import Sale from "@/components/Sale";
+
 export default {
   name: "sales",
+  components: { Sale },
+  mounted() {
+    this.$store.dispatch("customers");
+  },
+  method: {},
   computed: {
     start: {
       get: function() {
@@ -39,10 +40,23 @@ export default {
       get: function() {
         return this.$store.getters.end;
       }
+    },
+    customers: {
+      get: function() {
+        return this.$store.getters.customers;
+      }
     }
   },
   data() {
-    return {};
+    return {
+      sticky: true,
+      singleLine: true,
+      icon: "mdi-calendar",
+      color: undefined,
+      iconColor: "indigo",
+      elevation: 3
+      // customers: ["Cardinal", "Henry Schein", "Owens & Minor"]
+    };
   }
 };
 </script>

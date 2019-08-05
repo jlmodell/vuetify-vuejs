@@ -4,7 +4,7 @@ import VueCookies from "vue-cookies";
 import axios from "axios";
 import * as types from "./mutation-types";
 
-const url = `https://busse-nestjs-api.herokuapp.com/users/login/`;
+const url = `https://busse-nestjs-api.herokuapp.com/`;
 
 Vue.use(Vuex);
 Vue.use(VueCookies);
@@ -13,10 +13,14 @@ const state = {
   msg: "",
   token: localStorage.getItem("auth_token") || null,
   start: localStorage.getItem("start") || "",
-  end: localStorage.getItem("end") || ""
+  end: localStorage.getItem("end") || "",
+  customers: []
 };
 
 const getters = {
+  drawer(state) {
+    return state.drawer;
+  },
   loggedIn(state) {
     return state.token !== null;
   },
@@ -28,6 +32,9 @@ const getters = {
   },
   end(state) {
     return state.end;
+  },
+  customers(state) {
+    return state.customers;
   }
 };
 
@@ -46,13 +53,16 @@ const mutations = {
   },
   [types.UPDATE_END_DATE](state, payload) {
     state.end = payload;
+  },
+  [types.DISTINCT_CUSTOMERS](state, payload) {
+    state.customers = payload;
   }
 };
 
 const actions = {
   async login({ commit }, payload) {
     try {
-      const res = await axios.post(url, payload);
+      const res = await axios.post(url + "users/login/", payload);
 
       if (res.status == 201) {
         localStorage.setItem("auth_token", res.data.token);
@@ -78,6 +88,25 @@ const actions = {
     try {
       await localStorage.setItem("end", payload);
       commit(types.UPDATE_END_DATE, payload);
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  async customers({ commit }) {
+    const AuthStr = "Bearer ".concat(this.state.token);
+    console.log(AuthStr);
+    try {
+      const res = await axios.get(url + "sales/distinct/cust", {
+        headers: { Authorization: AuthStr },
+        body: {
+          start: this.state.start,
+          end: this.state.end
+        }
+      });
+
+      console.log(res);
+
+      commit(types.DISTINCT_CUSTOMERS, res.data.customers);
     } catch (err) {
       console.log(err);
     }
