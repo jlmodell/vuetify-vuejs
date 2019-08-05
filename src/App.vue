@@ -16,9 +16,7 @@ export default {
   name: "App",
   components: { SiteNavbar, SiteFooter },
   data() {
-    return {
-      auth: false
-    };
+    return {};
   }
 };
 </script>
