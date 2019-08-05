@@ -4,10 +4,7 @@ import VueCookies from "vue-cookies";
 import axios from "axios";
 import * as types from "./mutation-types";
 
-const url = `https://busse-nestjs-api.herokuapp.com/`;
-
-const currentMonth = new Date().getMonth() - 1;
-const priorMonth = new Date().getMonth();
+const currentMonth = new Date().getMonth();
 const year = new Date().getFullYear();
 
 Vue.use(Vuex);
@@ -16,12 +13,15 @@ Vue.use(VueCookies);
 const state = {
   msg: "",
   token: localStorage.getItem("auth_token") || null,
+  api: {
+    url: "https://busse-nestjs-api.herokuapp.com/"
+  },
   start:
     localStorage.getItem("start") ||
-    new Date(year, currentMonth, 1).toISOString().substring(0, 10),
+    new Date(year, currentMonth - 2, 1).toISOString().substring(0, 10),
   end:
     localStorage.getItem("end") ||
-    new Date(year, priorMonth, 0).toISOString().substring(0, 10),
+    new Date(year, currentMonth - 1, 0).toISOString().substring(0, 10),
   customers: []
 };
 
@@ -70,7 +70,10 @@ const mutations = {
 const actions = {
   async login({ commit }, payload) {
     try {
-      const res = await axios.post(url + "users/login/", payload);
+      const res = await axios.post(
+        `${this.state.api.url}users/login/`,
+        payload
+      );
 
       if (res.status == 201) {
         localStorage.setItem("auth_token", res.data.token);
@@ -101,24 +104,28 @@ const actions = {
     }
   },
   async customers({ commit }) {
-    const AuthStr = "Bearer ".concat(this.state.token);
-    console.log(AuthStr);
     try {
       const res = await axios.get(
-        url + `sales/distinct/cust/${this.state.start}/${this.state.end}`,
+        `${this.state.api.url}sales/distinct/cust/${this.state.start}/${
+          this.state.end
+        }`,
         {
-          headers: { Authorization: AuthStr }
+          headers: { Authorization: authStr }
         }
       );
 
-      console.log(res);
-
-      commit(types.DISTINCT_CUSTOMERS, res.data[0].customer);
+      if (res.status === 200) {
+        commit(types.DISTINCT_CUSTOMERS, res.data[0].customer);
+      } else {
+        console.log(res);
+      }
     } catch (err) {
       console.log(err);
     }
   }
 };
+
+const authStr = `Bearer ${state.token}`;
 
 export default new Vuex.Store({
   state,
