@@ -7,6 +7,8 @@ import * as types from "./mutation-types";
 const currentMonth = new Date().getMonth();
 const year = new Date().getFullYear();
 
+let customerArray = [];
+
 Vue.use(Vuex);
 Vue.use(VueCookies);
 
@@ -22,8 +24,8 @@ const state = {
   end:
     localStorage.getItem("end") ||
     new Date(year, currentMonth - 1, 0).toISOString().substring(0, 10),
-  customers: [],
-  customer: []
+  customers: JSON.parse(localStorage.getItem("customers")) || [],
+  customer: JSON.parse(localStorage.getItem("customerArray")) || []
 };
 
 const getters = {
@@ -126,6 +128,12 @@ const actions = {
       );
 
       if (res.status === 200) {
+        this.customerArray = [];
+        await localStorage.removeItem("customers");
+        await localStorage.setItem(
+          "customers",
+          JSON.stringify(res.data[0].customer)
+        );
         await commit(types.DISTINCT_CUSTOMERS, res.data[0].customer);
       } else {
         console.log(res);
@@ -148,7 +156,13 @@ const actions = {
       );
 
       if (res.status === 200) {
-        commit(types.CUSTOMER, res.data[0]);
+        customerArray.push(res.data[0]);
+        await localStorage.removeItem("customerArray");
+        await localStorage.setItem(
+          "customerArray",
+          JSON.stringify(customerArray)
+        );
+        await commit(types.CUSTOMER, res.data[0]);
       }
     } catch (err) {
       console.log(err);

@@ -2,7 +2,7 @@
   <v-container>
     <v-dialog v-model="dialog" width="500">
       <template v-slot:activator="{ on }">
-        <v-btn absolute dark fab bottom middle color="pink" @click="dialog = true">
+        <v-btn absolute dark fab right color="pink" @click="dialog = true">
           <v-icon>mdi-calendar</v-icon>
         </v-btn>
       </template>
@@ -11,12 +11,14 @@
         <v-card-title class="headline grey lighten-2" primary-title>Set Date Range</v-card-title>
 
         <div class="content">
-          <date-range-picker
-            class="headline"
-            v-model="range"
-            :options="options"
-            format="YYYY-MM-DD"
-          />
+          <div class="dateContainer">
+            <date-range-picker
+              class="datePicker font-weight-black"
+              v-model="range"
+              :options="options"
+              format="YYYY-MM-DD"
+            />
+          </div>
         </div>
 
         <v-divider></v-divider>
@@ -70,18 +72,20 @@ export default {
 </script>
 
 <style>
-.content {
+.dateContainer {
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
+  padding: 3rem 0;
 }
-.header {
-  padding: 2.5rem 0;
-}
-.start {
-  padding: 0 5rem 1rem 5rem;
-}
-.end {
-  padding: 0 5rem 1rem 5rem;
+.datePicker {
+  padding: 1rem 2rem;
+  cursor: pointer;
+  background-color: teal;
+  border-radius: 2.25rem;
+  color: white;
+  -webkit-box-shadow: 0px 3px 11px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 3px 11px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 3px 11px 0px rgba(0, 0, 0, 0.75);
 }
 </style>
