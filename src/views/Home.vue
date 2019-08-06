@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h1 class="display-3 red white--text">Homepage</h1>
+    <!-- <h1 class="display-3 red white--text">Homepage</h1>
     <p
       class="indigo white--text"
     >Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eligendi laudantium aut ipsa recusandae similique enim, harum eos distinctio obcaecati. Eos amet modi tempore natus ea quos autem dolores fuga atque.</p>
@@ -13,8 +13,11 @@
     <h4 class="display-1">Smaller Display</h4>
     <p class="headline">this is a headline</p>
     <p class="subheading">this is a subheading</p>
-    <p class="caption">this is a caption</p>
-    <div></div>
+    <p class="caption">this is a caption</p>-->
+    <div class="maindiv">
+      <span class="headline">Busse</span>
+      <span class="headline font-weight-light">Hospital Disposables</span>
+    </div>
   </div>
 </template>
 
@@ -23,3 +26,12 @@ export default {
   name: "home"
 };
 </script>
+
+<style>
+.maindiv {
+  margin: 7.5rem 5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>

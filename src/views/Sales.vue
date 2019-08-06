@@ -1,65 +1,69 @@
 <template>
   <v-container>
-    <v-banner
-      :sticky="sticky"
-      :single-line="singleLine"
-      :icon="icon"
-      :color="color"
-      :icon-color="iconColor"
-      :elevation="elevation"
-    >
-      {{new Date(start).toISOString().substring(0,10)}} - {{new Date(end).toISOString().substring(0,10)}}
-      <template
-        v-slot:actions
-      >
-        <v-btn text color="deep-purple accent-4" @click="$emit">Change Dates</v-btn>
+    <v-dialog v-model="dialog" width="500">
+      <template v-slot:activator="{ on }">
+        <v-btn absolute dark fab bottom middle color="pink" @click="dialog = true">
+          <v-icon>mdi-calendar</v-icon>
+        </v-btn>
       </template>
-    </v-banner>
-    <template v-for="customer in customers">
-      <Sale :customer="customer" :key="customer.index" />
-    </template>
+
+      <v-card>
+        <v-card-title class="headline grey lighten-2" primary-title>Set Date Range</v-card-title>
+
+        <div class="content">
+          <date-range-picker
+            class="headline"
+            v-model="range"
+            :options="options"
+            format="YYYY-MM-DD"
+          />
+        </div>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="dialog = false">I accept</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <Sale />
   </v-container>
 </template>
 
 <script>
 import Sale from "@/components/Sale";
 
+const year = new Date().getFullYear();
+const month = new Date().getMonth();
+
 export default {
   name: "sales",
   components: { Sale },
-  async mounted() {
-    await this.$store.dispatch("customers");
-    await this.$store.state.customers.forEach(x => {
-      this.$store.dispatch("customer", x.name.split("|")[1]);
-    });
-  },
   method: {},
-  computed: {
-    start: {
-      get: function() {
-        return this.$store.getters.start;
-      }
-    },
-    end: {
-      get: function() {
-        return this.$store.getters.end;
-      }
-    },
-    customers: {
-      get: function() {
-        return this.$store.getters.customers;
-      }
+  watch: {
+    range: async function(range) {
+      const [start, end] = await range;
+      await this.$store.dispatch("start", start);
+      await this.$store.dispatch("end", end);
+      await this.$store.dispatch("customers");
+      await this.$store.state.customers.forEach(x => {
+        this.$store.dispatch("customer", x.name.split("|")[1]);
+      });
     }
   },
   data() {
     return {
-      sticky: true,
-      singleLine: true,
-      icon: "mdi-calendar",
-      color: undefined,
-      iconColor: "indigo",
-      elevation: 3
-      // customers: ["Cardinal", "Henry Schein", "Owens & Minor"]
+      dialog: false,
+      range: [],
+      options: {
+        autoApply: true,
+        minDate: new Date("2012-01-02"),
+        maxDate: new Date(year, month, 0),
+        startDate: this.$store.getters.start,
+        endDate: this.$store.getters.end
+      }
     };
   }
 };

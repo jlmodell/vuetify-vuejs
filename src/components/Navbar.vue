@@ -29,21 +29,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-spacer></v-spacer>
-      <v-list-item>
-        <v-list-item-icon>
-          <v-icon>mdi-calendar</v-icon>
-        </v-list-item-icon>
-        <v-list-item-content justify-center>
-          <date-range-picker
-            v-model="range"
-            v-if="loggedIn"
-            :options="options"
-            format="YYYY-MM-DD"
-          />
-        </v-list-item-content>
-      </v-list-item>
-      <v-spacer></v-spacer>
+      <v-divider></v-divider>
 
       <template>
         <div class="pa-2">
@@ -57,9 +43,6 @@
 
 <script>
 import Login from "@/components/Login.vue";
-
-const year = new Date().getFullYear();
-const month = new Date().getMonth();
 
 export default {
   name: "sitenavbar",
@@ -84,23 +67,8 @@ export default {
       items: [
         { title: "Home", icon: "mdi-home", path: "/" },
         { title: "Sales Analysis", icon: "mdi-home", path: "/sales" }
-      ],
-      range: [],
-      options: {
-        autoApply: true,
-        minDate: new Date("2012-01-02"),
-        maxDate: new Date(year, month, 0),
-        startDate: this.$store.getters.start,
-        endDate: this.$store.getters.end
-      }
+      ]
     };
-  },
-  watch: {
-    range: async function(range) {
-      const [start, end] = await range;
-      await this.$store.dispatch("start", start);
-      await this.$store.dispatch("end", end);
-    }
   }
 };
 </script>

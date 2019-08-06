@@ -47,6 +47,9 @@ const getters = {
   },
   customer: state => cid => {
     return state.customer.filter(c => c._id.cid == cid);
+  },
+  customerArray: state => {
+    return state.customer;
   }
 };
 
@@ -121,11 +124,9 @@ const actions = {
           headers: { Authorization: authStr }
         }
       );
+
       if (res.status === 200) {
         await commit(types.DISTINCT_CUSTOMERS, res.data[0].customer);
-        // await res.data[0].customer.forEach(function(x) {
-        //   this.$store.dispatch("customer", x.name.split("|")[1]);
-        // });
       } else {
         console.log(res);
       }
